@@ -1,0 +1,160 @@
+    body {
+        margin: 0;
+        background-color: gray;
+        font-size: 20px;
+    }
+    
+    h1 {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+    
+    .weather_description {
+        text-align: center;
+    }
+    
+    .sunny {
+        display: block;
+        margin: 0 auto;
+        max-width: 100%;
+        max-height: 200px;
+    }
+    
+    .sun_circle {
+        margin: 0 auto;
+        display: block;
+        background-color: rgb(255, 255, 0);
+        border-radius: 50%;
+        height: 150px;
+        width: 150px;
+    }
+    
+    .sun_rays {
+        margin: 0 auto;
+        display: block;
+        position: relative;
+        top: -150px;
+        z-index: -100;
+        background-color: orange;
+        border-radius: 5%;
+        height: 150px;
+        width: 150px;
+        animation-duration: 5000ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
+    
+    .ray1 {
+        height: 150px;
+        width: 150px;
+        top: -150px;
+        animation-name: spin;
+    }
+    
+    .ray2 {
+        display: block;
+        position: relative;
+        top: -300px;
+        animation-name: spin2;
+    }
+    
+    .ray3 {
+        display: block;
+        position: relative;
+        top: -450px;
+        animation-name: spin3;
+    }
+    
+    .ray4 {
+        display: block;
+        position: relative;
+        top: -600px;
+        animation-name: spin4;
+    }
+    
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(180deg);
+        }
+    }
+    
+    @keyframes spin2 {
+        from {
+            transform: rotate(22.5deg);
+        }
+        to {
+            transform: rotate(202.5deg);
+        }
+    }
+    
+    @keyframes spin3 {
+        from {
+            transform: rotate(45deg);
+        }
+        to {
+            transform: rotate(225deg);
+        }
+    }
+    
+    @keyframes spin4 {
+        from {
+            transform: rotate(67.5deg);
+        }
+        to {
+            transform: rotate(247.5deg);
+        }
+    }
+    
+    .cloudy {
+        display: block;
+        width: 100%;
+        margin-top: 100px;
+        max-height: 200px;
+    }
+    
+    .cloud {
+        display: block;
+        margin: 0 auto;
+        background-color: white;
+        width: 210px;
+        height: 60px;
+        border-radius: 60px;
+        box-shadow: 5px 5px rgba(0, 0, 0, 0.2);
+        animation: cloudmove 3s infinite
+    }
+    
+    .cloud:before {
+        content: "";
+        display: block;
+        background-color: white;
+        position: relative;
+        width: 70px;
+        height: 70px;
+        top: -35px;
+        left: 30px;
+        border-radius: 50%;
+    }
+    
+    .cloud:after {
+        content: "";
+        display: block;
+        position: relative;
+        background-color: white;
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        top: -140px;
+        left: 65px;
+    }
+    
+    @keyframes cloudmove {
+        0% {
+            transform: translatex(20);
+        }
+        50% {
+            transform: translatex(-20px);
+        }
+    }
