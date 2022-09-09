@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
 
 <head>
@@ -11,16 +7,77 @@
     <title>Weather App</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+    <script type="text/javascript" defer>
+        window.onload = (event) => {
+            getLocation();
+            getWeather();
+        }
 
-    <script src="" async defer></script>
-    <h1>Weather App</h1>
+        function getLocation() {
+            const GEOCODING_APIKEY = "3be1f42904bf4aaba72db3c019d4fcb6";
+            const GEOCODING_URL = "https://api.geoapify.com/v1/geocode/reverse?";
+            var format = "&format=json";
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                        var lat = position.coords.latitude;
+                        var lng = position.coords.longitude;
+                        var requestOptions = {
+                            method: 'GET',
+                        };
+                        fetch(GEOCODING_URL + format + "&lat=" + lat + "&lon=" + lng + "&apiKey=" + GEOCODING_APIKEY, requestOptions)
+                            .then(response => response.json())
+                            .then(function(result) {
+                                document.querySelector(".currentLocation").innerHTML = result['results'][0].address_line1 + ", " + result['results'][0].address_line2;
+                            })
+                            .catch(error => console.log('error', error));
+                    },
+                    function(errorCallback) {
+                        console.log("Error: " + errorCallback.message);
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    });
+
+            };
+        }
+
+        function getWeather() {
+            const WEATHER_APIKEY = "fc0b97d44098f5af706589c4e90e5b64";
+            const WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather?";
+            var units = "units=metric";
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                        var lat = position.coords.latitude;
+                        var lng = position.coords.longitude;
+                    },
+                    function(errorCallback) {
+                        console.log("Error: " + errorCallback.message);
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    });
+
+            };
+
+
+        }
+    </script>
+    <h1 onclick="getWeather()">Weather App</h1>
+    <p style="text-align:center;padding-bottom:50px;">
+        <b>Current Location: </b>
+        <span class="currentLocation"></span>
+        <span style="padding-left: 25px;">
+            <i class="fa fa-refresh" aria-hidden="true" onclick="getLocation()" style="cursor:pointer;"></i>
+        </span>
+    </p>
+
     <span class="sunny">
         <span class="sun_circle"></span>
     <span class="sun_rays ray1"></span>
@@ -33,7 +90,47 @@
         <span class="cloud"></span>
     </span>
 
-    <p class="weather_description">Description</p>
+
+    <span class="cloudy">
+    <span class="cloud"></span>
+    <span class="windy">
+        <span class="windstroke"></span>
+    <span class="windstroke"></span>
+    <span class="windstroke"></span>
+    </span>
+    </span>
+
+    <span class="rainy ">
+        <span class="raincloud "></span>
+    <span class="rain ">
+        <span class="raindropContainer ">
+            <span class="raindrop " style="margin-left:40px;bottom:30px; "></span>
+    <span class="raindrop " style="margin-left:10px;top:10px; "></span>
+    <span class="raindrop " style="bottom:40px "></span>
+    <span class="raindrop " style="margin-left:15px;bottom:20px; "></span>
+    </span>
+    </span>
+    </span>
+
+    <span class="rainy ">
+        <span class="raincloud "></span>
+    <span class="rain ">
+        <span class="raindropContainer ">
+    <span class="bolt "></span>
+    <span class="raindrop " style="margin-left:40px;bottom:30px; "></span>
+    <span class="raindrop " style="margin-left:10px;top:10px; "></span>
+    <span class="raindrop " style="bottom:40px "></span>
+    <span class="raindrop " style="margin-left:15px;bottom:20px; "></span>
+
+    </span>
+    </span>
+
+    </span>
+
+
+    <p class="weather_description ">Description</p>
+
+    <footer>This is made with CSS only, Weather API is from openweathermap.org</footer>
 </body>
 
 </html>
