@@ -1,136 +1,273 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Weather App</title>
+		<meta name="description" content="" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<script type="text/javascript" defer>
+		window.onload = (event) => {
+			document.querySelectorAll(".weather-animation").forEach((ele) => {
+				ele.style.display = "none";
+			});
+			getLocation();
+		};
+		let refresh = 0;
+		function getLocation() {
+			const GEOCODING_APIKEY = "3be1f42904bf4aaba72db3c019d4fcb6";
+			const GEOCODING_URL = "https://api.geoapify.com/v1/geocode/reverse?";
+			var format = "&format=json";
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(
+					function (position) {
+						var lat = position.coords.latitude;
+						var lng = position.coords.longitude;
+						var requestOptions = {
+							method: "GET",
+						};
+						fetch(GEOCODING_URL + format + "&lat=" + lat + "&lon=" + lng + "&apiKey=" + GEOCODING_APIKEY, requestOptions)
+							.then((response) => response.json())
+							.then(function (result) {
+								document.querySelector(".currentLocation").innerHTML =
+									result["results"][0].address_line1 + ", " + result["results"][0].address_line2;
+								getWeather(lat, lng);
+							})
+							.catch((error) => console.log("error", error));
+					},
+					function (errorCallback) {
+						console.log("Error: " + errorCallback.message);
+					},
+					{
+						enableHighAccuracy: true,
+						timeout: 5000,
+						maximumAge: 0,
+					}
+				);
+			}
+		}
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Weather App</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="styles.css">
-</head>
+		function getWeather(latitude, longitude) {
+			const WEATHER_APIKEY = "fc0b97d44098f5af706589c4e90e5b64";
+			const WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather";
+			var url = new URL(WEATHER_URL);
+			url.searchParams.append("lat", latitude);
+			url.searchParams.append("lon", longitude);
+			url.searchParams.append("units", "metric");
+			url.searchParams.append("appid", WEATHER_APIKEY);
+			console.log(url.href);
+			var requestOptions = {
+				method: "GET",
+			};
+			fetch(url.href, requestOptions)
+				.then((response) => response.json())
+				.then(function (result) {
+					console.log(JSON.stringify(result));
+					weather_id = result["weather"][0]["id"];
+					showWeatherAnimation(weather_id);
+					weather_main = result["weather"][0]["main"];
+					weather_description = result["weather"][0]["description"];
+					temp = result["main"]["temp"];
+					feels_like = result["main"]["feels_like"];
+					windspeed = parseFloat(result["wind"]["speed"]) * 60 * 60;
 
-<body>
-    <script type="text/javascript" defer>
-        window.onload = (event) => {
-            getLocation();
-            getWeather();
-        }
+					//Convert sunrise to datetime
+					var sunrise = new Date(parseInt(result["sys"]["sunrise"]) * 1000);
+					sunrise = sunrise.toLocaleString();
 
-        function getLocation() {
-            const GEOCODING_APIKEY = "3be1f42904bf4aaba72db3c019d4fcb6";
-            const GEOCODING_URL = "https://api.geoapify.com/v1/geocode/reverse?";
-            var format = "&format=json";
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                        var lat = position.coords.latitude;
-                        var lng = position.coords.longitude;
-                        var requestOptions = {
-                            method: 'GET',
-                        };
-                        fetch(GEOCODING_URL + format + "&lat=" + lat + "&lon=" + lng + "&apiKey=" + GEOCODING_APIKEY, requestOptions)
-                            .then(response => response.json())
-                            .then(function(result) {
-                                document.querySelector(".currentLocation").innerHTML = result['results'][0].address_line1 + ", " + result['results'][0].address_line2;
-                            })
-                            .catch(error => console.log('error', error));
-                    },
-                    function(errorCallback) {
-                        console.log("Error: " + errorCallback.message);
-                    }, {
-                        enableHighAccuracy: true,
-                        timeout: 5000,
-                        maximumAge: 0
-                    });
+					//Convert sunset to datetime
+					var sunset = new Date(parseInt(result["sys"]["sunset"]) * 1000);
+					sunset = sunset.toLocaleString();
 
-            };
-        }
+					document.querySelector(".weather_main").textContent = weather_main;
+					document.querySelector(".weather_description").textContent = weather_description;
+					document.querySelector(".temp").textContent = temp;
+					document.querySelector(".feels_like").textContent = feels_like;
+					document.querySelector(".sunrise").textContent = sunrise;
+					document.querySelector(".sunset").textContent = sunset;
+				})
+				.catch((error) => console.log("error", error));
+		}
 
-        function getWeather() {
-            const WEATHER_APIKEY = "fc0b97d44098f5af706589c4e90e5b64";
-            const WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather?";
-            var units = "units=metric";
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                        var lat = position.coords.latitude;
-                        var lng = position.coords.longitude;
-                    },
-                    function(errorCallback) {
-                        console.log("Error: " + errorCallback.message);
-                    }, {
-                        enableHighAccuracy: true,
-                        timeout: 5000,
-                        maximumAge: 0
-                    });
+		function showWeatherAnimation(id, windspeed = 0, day = 0) {
+			document.querySelectorAll(".weather-animation").forEach((ele) => {
+				ele.style.display = "none";
+			});
+			if (id >= 200 && id <= 232) {
+				//Thunderstorm
+				document.querySelector("[weatherid='200']").style.display = "block";
+			} else if (id >= 300 && id <= 531) {
+				//Rainy
+				document.querySelector("[weatherid='300']").style.display = "block";
+			} else if ((id = 800)) {
+				//Clear skies
+				document.querySelector("[weatherid='800']").style.display = "block";
+			} else if (id >= 801 && id <= 804) {
+				//Cloudy
+				if ((windy = 0)) {
+					//Windy
+					document.querySelector("[weatherid='900']").style.display = "block";
+				} else {
+					document.querySelector("[weatherid='801']").style.display = "block";
+				}
+			}
+		}
 
-            };
+		function refreshWeather() {
+			refresh++;
+			if (refresh > 3) {
+				alert("Your location and weather has already been refreshed.");
+				refresh = 0;
+			}
+			getLocation();
+		}
+	</script>
+	<body>
+		<h1>Weather App</h1>
+		<div style="text-align: center">
+			<a href="allAnimations.html">See all animations</a>
+		</div>
+		<p style="text-align: center; padding-bottom: 50px">
+			<b>Current Location: </b>
+			<span class="currentLocation"></span>
+			<span style="padding-left: 25px">
+				<i class="fa fa-refresh" aria-hidden="true" onclick="refreshWeather()" style="cursor: pointer"></i>
+			</span>
+		</p>
 
+		<section>
+			<div class="weather-animation" weatherid="800">
+				<span class="sunny">
+					<span class="sun">
+						<span class="sun_circle"></span>
+						<span class="sun_rays ray1"></span>
+						<span class="sun_rays ray2"></span>
+						<span class="sun_rays ray3"></span>
+						<span class="sun_rays ray4"></span>
+					</span>
+				</span>
+			</div>
 
-        }
-    </script>
-    <h1 onclick="getWeather()">Weather App</h1>
-    <p style="text-align:center;padding-bottom:50px;">
-        <b>Current Location: </b>
-        <span class="currentLocation"></span>
-        <span style="padding-left: 25px;">
-            <i class="fa fa-refresh" aria-hidden="true" onclick="getLocation()" style="cursor:pointer;"></i>
-        </span>
-    </p>
+			<div class="weather-animation" weatherid="801">
+				<span class="sunny cloudy">
+					<span class="cloud"></span>
+					<span class="sun" style="position: relative; bottom: 100px">
+						<span class="sun_circle"></span>
+						<span class="sun_rays ray1"></span>
+						<span class="sun_rays ray2"></span>
+						<span class="sun_rays ray3"></span>
+						<span class="sun_rays ray4"></span>
+					</span>
+				</span>
+			</div>
 
-    <span class="sunny">
-        <span class="sun_circle"></span>
-    <span class="sun_rays ray1"></span>
-    <span class="sun_rays ray2"></span>
-    <span class="sun_rays ray3"></span>
-    <span class="sun_rays ray4"></span>
-    </span>
+			<div class="weather-animation" weatherid="850">
+				<span class="cloudy" weatherid="801">
+					<span class="cloud"></span>
+				</span>
+			</div>
 
-    <span class="cloudy">
-        <span class="cloud"></span>
-    </span>
+			<div class="weather-animation" weatherid="900">
+				<span class="cloudy windy">
+					<span class="cloud"></span>
+					<span class="wind">
+						<span class="windstroke"></span>
+						<span class="windstroke"></span>
+						<span class="windstroke"></span>
+					</span>
+				</span>
+			</div>
 
+			<div class="weather-animation" weatherid="300">
+				<span class="rainy">
+					<span class="raincloud"></span>
+					<span class="rain">
+						<span class="raindropContainer">
+							<span class="raindrop" style="margin-left: 40px; bottom: 30px"></span>
+							<span class="raindrop" style="margin-left: 10px; top: 10px"></span>
+							<span class="raindrop" style="bottom: 40px"></span>
+							<span class="raindrop" style="margin-left: 15px; bottom: 20px"></span>
+						</span>
+					</span>
+				</span>
+			</div>
 
-    <span class="cloudy">
-    <span class="cloud"></span>
-    <span class="windy">
-        <span class="windstroke"></span>
-    <span class="windstroke"></span>
-    <span class="windstroke"></span>
-    </span>
-    </span>
+			<div class="weather-animation" weatherid="200">
+				<span class="thunderstorm">
+					<span class="raincloud"></span>
+					<span class="rain">
+						<span class="raindropContainer">
+							<span class="bolt"></span>
+							<span class="raindrop" style="margin-left: 40px; bottom: 30px"></span>
+							<span class="raindrop" style="margin-left: 10px; top: 10px"></span>
+							<span class="raindrop" style="bottom: 40px"></span>
+							<span class="raindrop" style="margin-left: 15px; bottom: 20px"></span>
+						</span>
+					</span>
+				</span>
+			</div>
 
-    <span class="rainy ">
-        <span class="raincloud "></span>
-    <span class="rain ">
-        <span class="raindropContainer ">
-            <span class="raindrop " style="margin-left:40px;bottom:30px; "></span>
-    <span class="raindrop " style="margin-left:10px;top:10px; "></span>
-    <span class="raindrop " style="bottom:40px "></span>
-    <span class="raindrop " style="margin-left:15px;bottom:20px; "></span>
-    </span>
-    </span>
-    </span>
+			<div class="weather-animation" weatherid="850">
+				<span class="night">
+					<span class="moon"></span>
+				</span>
+			</div>
 
-    <span class="rainy ">
-        <span class="raincloud "></span>
-    <span class="rain ">
-        <span class="raindropContainer ">
-    <span class="bolt "></span>
-    <span class="raindrop " style="margin-left:40px;bottom:30px; "></span>
-    <span class="raindrop " style="margin-left:10px;top:10px; "></span>
-    <span class="raindrop " style="bottom:40px "></span>
-    <span class="raindrop " style="margin-left:15px;bottom:20px; "></span>
+			<div class="weather-animation" weatherid="350">
+				<span class="night rainy">
+					<span class="moon" style="left: -20px"></span>
+					<span class="rainy">
+						<span class="raincloud"></span>
+						<span class="rain">
+							<span class="raindropContainer">
+								<span class="raindrop" style="margin-left: 40px; bottom: 30px"></span>
+								<span class="raindrop" style="margin-left: 10px; top: 10px"></span>
+								<span class="raindrop" style="bottom: 40px"></span>
+								<span class="raindrop" style="margin-left: 15px; bottom: 20px"></span>
+							</span>
+						</span>
+					</span>
+				</span>
+			</div>
 
-    </span>
-    </span>
+			<div class="weather-animation" weatherid="250">
+				<span class="night thunderstorm">
+					<span class="moon" style="left: -20px"></span>
+					<span class="thunderstorm">
+						<span class="raincloud"></span>
+						<span class="rain">
+							<span class="raindropContainer">
+								<span class="bolt"></span>
+								<span class="raindrop" style="margin-left: 40px; bottom: 30px"></span>
+								<span class="raindrop" style="margin-left: 10px; top: 10px"></span>
+								<span class="raindrop" style="bottom: 40px"></span>
+								<span class="raindrop" style="margin-left: 15px; bottom: 20px"></span>
+							</span>
+						</span>
+					</span>
+				</span>
+			</div>
+		</section>
 
-    </span>
+		<div class="weather_description_container">
+			<h2 class="weather_main"></h2>
+			<p class="weather_details">
+				<span style="font-weight: bold">Details: </span><span class="weather_description"></span>
+				<br />
+				<br />
+				<span style="font-weight: bold">Temperature: </span><span class="temp"></span>
+				<br />
+				<span style="font-weight: bold">Feels Like: </span><span class="feels_like"></span>
+				<br />
+				<span style="font-weight: bold">Sunrise: </span><span class="sunrise"></span>
+				<br />
+				<span style="font-weight: bold">Sunset: </span><span class="sunset"></span>
+			</p>
+		</div>
 
-
-    <p class="weather_description ">Description</p>
-
-    <footer>This is made with CSS only, Weather API is from openweathermap.org</footer>
-</body>
-
+		<footer>This is made with CSS only. Developed by King</footer>
+	</body>
 </html>

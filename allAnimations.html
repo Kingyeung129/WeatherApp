@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Weather App</title>
+		<meta name="description" content="" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<script type="text/javascript">
+		window.onload = (event) => {
+			document.querySelectorAll(".weather-animation").forEach((ele) => {
+				ele.style.display = "block";
+			});
+		};
+	</script>
+
+	<body>
+		<h1>Weather Animations</h1>
+		<p style="text-align: center">
+			<a href="index.html"><<< Return to Weather App</a>
+			<br />
+			<br />
+			<b>All animations are done in CSS only</b>
+		</p>
+
+		<section class="allAnimations">
+			<div class="weather-animation" weatherid="800">
+				<span class="sunny">
+					<span class="sun">
+						<span class="sun_circle"></span>
+						<span class="sun_rays ray1"></span>
+						<span class="sun_rays ray2"></span>
+						<span class="sun_rays ray3"></span>
+						<span class="sun_rays ray4"></span>
+					</span>
+				</span>
+			</div>
+
+			<div class="weather-animation" weatherid="801">
+				<span class="sunny cloudy">
+					<span class="cloud"></span>
+					<span class="sun" style="position: relative; bottom: 100px">
+						<span class="sun_circle"></span>
+						<span class="sun_rays ray1"></span>
+						<span class="sun_rays ray2"></span>
+						<span class="sun_rays ray3"></span>
+						<span class="sun_rays ray4"></span>
+					</span>
+				</span>
+			</div>
+
+			<div class="weather-animation" weatherid="850">
+				<span class="cloudy" weatherid="801">
+					<span class="cloud"></span>
+				</span>
+			</div>
+
+			<div class="weather-animation" weatherid="900">
+				<span class="cloudy windy">
+					<span class="cloud"></span>
+					<span class="wind">
+						<span class="windstroke"></span>
+						<span class="windstroke"></span>
+						<span class="windstroke"></span>
+					</span>
+				</span>
+			</div>
+
+			<div class="weather-animation" weatherid="500">
+				<span class="rainy">
+					<span class="raincloud"></span>
+					<span class="rain">
+						<span class="raindropContainer">
+							<span class="raindrop" style="margin-left: 40px; bottom: 30px"></span>
+							<span class="raindrop" style="margin-left: 10px; top: 10px"></span>
+							<span class="raindrop" style="bottom: 40px"></span>
+							<span class="raindrop" style="margin-left: 15px; bottom: 20px"></span>
+						</span>
+					</span>
+				</span>
+			</div>
+
+			<div class="weather-animation" weatherid="200">
+				<span class="thunderstorm">
+					<span class="raincloud"></span>
+					<span class="rain">
+						<span class="raindropContainer">
+							<span class="bolt"></span>
+							<span class="raindrop" style="margin-left: 40px; bottom: 30px"></span>
+							<span class="raindrop" style="margin-left: 10px; top: 10px"></span>
+							<span class="raindrop" style="bottom: 40px"></span>
+							<span class="raindrop" style="margin-left: 15px; bottom: 20px"></span>
+						</span>
+					</span>
+				</span>
+			</div>
+
+			<div class="weather-animation" weatherid="850">
+				<span class="night">
+					<span class="moon"></span>
+				</span>
+			</div>
+
+			<div class="weather-animation" weatherid="851">
+				<span class="night">
+					<span class="moon" style="left: -20px"></span>
+					<span class="rainy">
+						<span class="raincloud"></span>
+						<span class="rain">
+							<span class="raindropContainer">
+								<span class="raindrop" style="margin-left: 40px; bottom: 30px"></span>
+								<span class="raindrop" style="margin-left: 10px; top: 10px"></span>
+								<span class="raindrop" style="bottom: 40px"></span>
+								<span class="raindrop" style="margin-left: 15px; bottom: 20px"></span>
+							</span>
+						</span>
+					</span>
+				</span>
+			</div>
+
+			<div class="weather-animation" weatherid="250">
+				<span class="night">
+					<span class="moon" style="left: -20px"></span>
+					<span class="thunderstorm">
+						<span class="raincloud"></span>
+						<span class="rain">
+							<span class="raindropContainer">
+								<span class="bolt"></span>
+								<span class="raindrop" style="margin-left: 40px; bottom: 30px"></span>
+								<span class="raindrop" style="margin-left: 10px; top: 10px"></span>
+								<span class="raindrop" style="bottom: 40px"></span>
+								<span class="raindrop" style="margin-left: 15px; bottom: 20px"></span>
+							</span>
+						</span>
+					</span>
+				</span>
+			</div>
+		</section>
+
+		<footer>This is made with CSS only. Developed by King</footer>
+	</body>
+</html>
